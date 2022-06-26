@@ -24,13 +24,13 @@ interface GetLessonBySlugResponse {
         title: string;
         videoId: string;
         description: string;
-    
+
         teacher: {
-        bio: string;
-        avatarURL: string;
-        name: string;
+            bio: string;
+            avatarURL: string;
+            name: string;
+        }
     }
-}
 }
 
 
@@ -39,19 +39,19 @@ interface VideoProps {
 }
 
 export function Video(props: VideoProps) {
-    const {data} = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
+    const { data } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
         variables: {
             slug: props.lessonSlug,
         }
     })
 
-   if (!data) {
-    return (
-        <div className="flex-1">
-            <p>Carregando...</p>
-        </div>
-    )
-   }
+    if (!data) {
+        return (
+            <div className="flex-1">
+                <p>Carregando...</p>
+            </div>
+        )
+    }
 
     return (
         <div className="flex-1">
