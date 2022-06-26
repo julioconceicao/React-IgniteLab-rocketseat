@@ -1,6 +1,7 @@
 import { CheckCircle, Lock } from 'phosphor-react';
-import {isPast, format} from 'date-fns';
-import { Link } from 'react-router-dom';
+import { isPast, format } from 'date-fns';
+import { Link, useParams } from 'react-router-dom';
+import classNames from 'classnames'
 
 interface LessonProps {
     title: string;
@@ -10,8 +11,12 @@ interface LessonProps {
 }
 
 export function Lesson(props: LessonProps) {
+    const { slug } = useParams<{ slug: string }>()
+
     const isLessonAvailable = isPast(props.availableAt)
     const availableDateFormatted = format(props.availableAt, "EEEE' • 'd', 'MMMM' • 'k'h'mm ")
+
+    const isActiveLesson = slug == props.slug
     return (
         <div>
             <Link to={`/event/lesson/${props.slug}`} className='group'>
@@ -19,26 +24,42 @@ export function Lesson(props: LessonProps) {
                     {availableDateFormatted}
                 </span>
 
-                <div className="rounded border border-gray-500 p-4 mt-2 group-hover:border-green-500">
-                    <header className="flex items-center justify-between">
-                     {isLessonAvailable ? (
-                           <span className="text-sm text-blue-500 font-medium flex items-center gap-2 ">
-                           <CheckCircle size={20} />
-                           Content released
-                       </span>
-                     ) : (
-                        <span className="text-sm text-orange-500 font-medium flex items-center gap-2">
-                        <Lock size={20} />
-                        Coming soon
-                    </span>
-                     )}
 
-                        <span className="text-xs rounded  py-[0.125rem] text-white font-bold px-2 border border-blue-500 ">
-                            {props.type == 'live' ? 'AO VIVO' : 'AULA PRÁTICA' }
+                <div
+                    className={classNames('rounded border border-gray-500 p-4 mt-2 group-hover:border-green-500', {
+                        'bg-green-500': isActiveLesson,
+                    })}
+                >
+                    <header className="flex items-center justify-between">
+                        {isLessonAvailable ? (
+                            <span className={classNames('text-sm font-medium flex items-center gap-2', {
+                                'text-white': isActiveLesson,
+                                'text-blue-500': !isActiveLesson,
+                            })}
+                            >
+                                <CheckCircle size={20} />
+                                Content released
+                            </span>
+                        ) : (
+                            <span className="text-sm text-orange-500 font-medium flex items-center gap-2">
+                                <Lock size={20} />
+                                Coming soon
+                            </span>
+                        )}
+
+                        <span className={classNames('text-xs rounded  py-[0.125rem] text-white font-bold px-2 border', {
+                            'border-white': isActiveLesson,
+                            'border-blue-500': !isActiveLesson,
+                        })}
+                        >
+                            {props.type == 'live' ? 'AO VIVO' : 'AULA PRÁTICA'}
                         </span>
                     </header>
-
-                    <strong className="text-gray-200 mt-5 font-bold block">
+                    {/* text-gray-200 mt-5 font-bold block */}
+                    <strong className={classNames('mt-5 font-bold block', {
+                        'text-white': isActiveLesson,
+                        'text-gray-200': !isActiveLesson,
+                    })}>
                         {props.title}
                     </strong>
                 </div>
